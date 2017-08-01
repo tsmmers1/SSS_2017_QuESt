@@ -51,7 +51,7 @@ class cmake_build(install):
 
         # Find build directory (in-place)
         abspath = os.path.abspath(os.path.dirname(__file__))
-        build_path = os.path.join(abspath, "quantum_python", "core")
+        build_path = os.path.join(abspath, "project", "core")
         os.chdir(build_path)
         print(">>> cd {}".format(build_path))
 
@@ -85,7 +85,7 @@ class cmake_clean(install):
 
         # Find build directory (in-place)
         abspath = os.path.abspath(os.path.dirname(__file__))
-        build_path = os.path.join(abspath, "quantum_python", "core")
+        build_path = os.path.join(abspath, "project", "core")
         os.chdir(build_path)
         print("Removing CMake build files...")
 

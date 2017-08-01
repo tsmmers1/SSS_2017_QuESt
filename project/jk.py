@@ -1,6 +1,7 @@
 """
 Contains the JK computers (or their bindings)
 """
+from . import core
 
 import numpy as np
 import psi4
@@ -56,6 +57,7 @@ class PKJK(object):
         Initialized the JK object from a MintsHelper object.
         """
         self.nbf = mints.nbf()
+        self.I = np.asarray(mints.ao_eri())
         self.I_J = np.asarray(mints.ao_eri())
         self.I_K = self.I_J.swapaxes(1, 2).reshape(self.nbf * self.nbf, -1)
         self.I_J.shape = (self.nbf * self.nbf, -1)
@@ -70,7 +72,8 @@ class PKJK(object):
 
         D = np.dot(C_right, C_left.T)
 
-        J = np.dot(self.I_J, D.ravel()).reshape(self.nbf, -1)
-        K = np.dot(self.I_K, D.ravel()).reshape(self.nbf, -1)
+        J = np.zeros((self.nbf, self.nbf))
+        K = np.zeros((self.nbf, self.nbf))
+        core.compute_PKJK(self.I, D, J, K)
 
         return J, K
