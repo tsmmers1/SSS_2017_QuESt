@@ -99,3 +99,29 @@ ENV/
 
 # mypy
 .mypy_cache/
+
+# Psi specific
+timer.dat
+output.dat
+
+
+# LaTEX
+*.bbl
+*.aux
+*.synctex.gz
+*.blg
+*Notes.bib
+
+# Mac
+*.DS_Store
+*.swp
+
+# CMake
+CMakeCache.txt
+cmake_install.cmake
+CMakeFiles*
+Makefile
+
+# Random Testing
+test.py
+
