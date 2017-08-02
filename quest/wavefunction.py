@@ -25,11 +25,9 @@ class WaveFunction(object):
         self.e_conv = e_conv
         self.d_conv = d_conv
 
-        # Possible energies: scf_energy, mp2_os_corr, mp2_ss_corr
+        # Energies: scf_energy, mp2_os_corr, mp2_ss_corr, E_nuc
         self.energies = {}
-        # Possible integrals: J and K
-        self.integrals = {}
-        self.coefficients = np.array()
 
-        # The Fock matrix history for DIIS people
-        self.Fock_history = []
+        # coefficients, fock_matrix, density,
+        # and whatever else you wanna put in it... communicate about it
+        self.arrays = {}
