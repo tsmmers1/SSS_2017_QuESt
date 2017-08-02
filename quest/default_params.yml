@@ -1,9 +1,10 @@
 qm:
   basis_set: 'sto-3g'
   max_iter: 100
+  diis : True
   max_diis: 6
-  dcov: 1.0e-06
-  ecov: 1.0e-06
+  d_conv: 1.0e-06
+  e_conv: 1.0e-06
 mm:
   num_particles: 800
   num_steps: 50000
