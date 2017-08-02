@@ -30,7 +30,7 @@ class Wavefunction(object):
     Examples
     -------
     >>>h2o_wf = Wavefunction(mol)
-    Creates an instance of the Wavefunction class called h2o
+    Creates an instance of the Wavefunction class called h2o_wf
     """
 
     def __init__(self, mol):
