@@ -4,6 +4,7 @@ An SCF module
 
 import numpy as np
 import psi4
+import time
 
 
 def compute_JK(g, D, version):
@@ -25,6 +26,7 @@ def compute_rhf(wfn, df=True, diis=True, maxiter=25, e_conv=1.e-6, d_conv=1.e-6)
     if (nbf > 100):
         raise Exception("More than 100 basis functions!")
 
+    t = time.time()
     # Build core hamiltonian and overlap matrix
     V = np.array(wfn.mints.ao_potential())
     T = np.array(wfn.mints.ao_kinetic())
@@ -33,6 +35,7 @@ def compute_rhf(wfn, df=True, diis=True, maxiter=25, e_conv=1.e-6, d_conv=1.e-6)
 
     # Build ERI matrix
     g = np.array(wfn.mints.ao_eri())
+    print('\nTotal time taken for setup: %.3f seconds' % (time.time() - start_time))
 
     # Build orthogonalization matrix
     A = wfn.mints.ao_overlap()
@@ -58,10 +61,12 @@ def compute_rhf(wfn, df=True, diis=True, maxiter=25, e_conv=1.e-6, d_conv=1.e-6)
     F_list = []
     DIIS_grad = []
     grad_rms_list = []
-    E_old = 0.0
+    SCF_E_old = 0.0
     F_old = None
+    t = time.time()
 
     # Roothan iterations
+    print('\nStarting SCF iterations:\n')
     for iteration in range(maxiter):
         J, K = compute_JK(g, D, "conv")
 
@@ -96,19 +101,24 @@ def compute_rhf(wfn, df=True, diis=True, maxiter=25, e_conv=1.e-6, d_conv=1.e-6)
                 F = damp_value * F_old + (1.0 - damp_value) * F_new
 
 
-        E = np.sum((F + H) * D)
+        SCF_E = np.sum((F + H) * D)
+        print('SCF Iteration %3d: Energy = %4.16f   dE = % 1.5E   dRMS = %1.5E' % (iteration, SCF_E, (SCF_E - SCF_E_old))
 
         eps, C = diag(F, A)
         Cocc = C[:, :ndocc]
         D = Cocc @ Cocc.T
 
-        if (E - E_old < e_conv) and (grad_rms < d_conv):
+        if (SCF_E - E_old < e_conv) and (grad_rms < d_conv):
             break
 
-        E_old = E
+        SCF_E_old = SCF_E
         F_old = F
 
-    wfn.energies['scf_energy'] = E
+    print('Total time for SCF iterations: %.3f seconds \n' % (time.time() - t))
+
+    print('Final SCF energy: %.8f hartree' % SCF_E)
+
+    wfn.energies['scf_energy'] = SCF_E
     wfn.arrays['fock_matrix'] = F
     wfn.arrays['density'] = D
     wfn.arrays['coefficients'] = C

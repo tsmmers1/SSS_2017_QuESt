@@ -49,6 +49,9 @@ class Wavefunction(object):
         self.options = parameters
         self.options["ndocc"] = mol.nel
 
+        # Save the molecule
+        self.mol = mol
+
         # Build the mints object
         self.mints = psi4.core.MintsHelper(mol.bas)
 
