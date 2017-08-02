@@ -40,8 +40,20 @@ def _mo_transform(g, C, nocc):
     return g_iajb
 
 
-def _denom():
-    pass
+def _denom(wfn):
+    #get energies from fock matrix)
+    #multiply C and F to get 
+    eps = wfn.arrays.get("EPSILON", None )
+    if eps != None:
+        #must pull nocc from wavefunction when implemented
+        nocc = 5
+        eocc = eps[:nocc]
+        evir = eps[nocc:]
+        e_denom = 1 / (eocc.reshape(-1, 1, 1, 1) - evir.reshape(-1, 1, 1) + eocc.reshape( -1, 1) - evir)
+   else:
+        raise Exception ("orbital energy array  'EPSILON' doesn't exist")
+   return e_denom
+
 
 
 def _compute_conv_e(I_iajb, D_ijab):
