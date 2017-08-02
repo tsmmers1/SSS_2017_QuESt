@@ -9,7 +9,6 @@ from . import solvers
 from . import core
 from . import mp2
 from . import mollib
-from . import cli
 
 
 # Make sure Psi4 respects the global OMP_NUM_THREADS
