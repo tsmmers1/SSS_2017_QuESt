@@ -3,7 +3,7 @@ import quest
 import psi4
 import numpy as np
 
-def test_get_coeffs():
+def test_lj_fit():
     A = 148.0
     B = 1.0
     distances = np.arange(2.0, 10.0, 0.25)
@@ -11,6 +11,8 @@ def test_get_coeffs():
     A, B = quest.lj.fit_lj(distances, energies)
     assert np.isclose(A, 148.0) and np.isclose(B, -1.0)
 
-#def test_lj_fit():
-#    mol = psi4.geometry("He")
-#    assert quest.lj.lj_fit(mol) == 0.5
+def test_get_lj_params():
+    mol_psi = psi4.geometry("He")
+    test = molecule.Molecule(mol_psi, "sto-3g")
+    s, a, b, e, d = build_lj_params(test, True)
+    assert abs(s - 2.8) <= 1
