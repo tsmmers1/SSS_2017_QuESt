@@ -11,4 +11,4 @@ H 1 1.1 2 104
 
 
 molecules = {}
-molecule["h2o"] = water_molecule
+molecules["h2o"] = water_molecule
