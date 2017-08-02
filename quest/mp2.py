@@ -1,5 +1,13 @@
-import numpy as np
+"""MP2 energy functions
 
+Notes
+-----
+This module provides functions for computing MP2 corrected energies. The module
+provides two interfaces mp2, and df_mp2 for computing conventional and density
+fitted MP2 energies respectively.
+
+"""
+import numpy as np
 
 
 def mp2(wavefunction):
@@ -8,16 +16,16 @@ def mp2(wavefunction):
     Parameters
     ----------
     wavefunction: Wavefunction object
-        Input `wavefunction` should have MO coefficients and orbital energies in
-        `wavefunction.arrays` dictionary.
+        Input `wavefunction` should have MO coefficients and orbital energies
+        in `wavefunction.arrays` dictionary.
 
     Returns
     --------
     mp2_energy: float
         The mp2 energy, scf_energy + mp2 correlation energy
     wavefunction: Wavefunction object
-        On return this will be the input `wavefunction` with MP2 energy quantities added to the
-        `wavefunction.energies` dictionary.
+        On return this will be the input `wavefunction` with MP2 energy
+        quantities added to the `wavefunction.energies` dictionary.
 
     """
     pass
@@ -29,16 +37,16 @@ def df_mp2(wavefunction):
     Parameters
     ----------
     wavefunction: Wavefunction object
-        Input `wavefunction` should have MO coefficients and orbital energies in
-        `wavefunction.arrays` dictionary.
+        Input `wavefunction` should have MO coefficients and orbital energies
+        in `wavefunction.arrays` dictionary.
 
     Returns
     --------
     mp2_energy: float
         The mp2 energy, scf_energy + mp2 correlation energy
     wavefunction: Wavefunction object
-        On return this will be the input `wavefunction` with MP2 energy quantities added to the
-        `wavefunction.energies` dictionary.
+        On return this will be the input `wavefunction` with MP2 energy
+        quantities added to the `wavefunction.energies` dictionary.
     """
     pass
 
@@ -55,9 +63,10 @@ def _mo_transform(g, C, nocc):
     O = slice(None, nocc)
     V = slice(nocc, None)
     g_iajb = np.einsum('pQRS, pP -> PQRS',
-        np.einsum('pqRS, qQ -> pQRS',
-        np.einsum('pqrS, rR -> pqRS',
-        np.einsum('pqrs, sS -> pqrS', g, C[:,V]), C[:,O]), C[:,V]), C[:,O])
+             np.einsum('pqRS, qQ -> pQRS',
+             np.einsum('pqrS, rR -> pqRS',
+             np.einsum('pqrs, sS -> pqrS',
+                g, C[:, V]), C[:, O]), C[:, V]), C[:, O])
     return g_iajb
 
 
