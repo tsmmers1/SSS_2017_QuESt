@@ -5,6 +5,10 @@ import scipy as sp
 import os
 
 def response(g, F, C, L, R, nocc):
+    '''
+    Calculates the CPHF response.
+    Expects the eri 4-tensor, g,  the Fock matrix, F, the MO coeefcient matrix, C, the left and right response tensors, L and R, and the occupation number, nocc.
+    '''
     nbas = F.shape[0]
     nvirt = nbas - nocc 
     opeartor_vs = 1
