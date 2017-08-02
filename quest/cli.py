@@ -4,7 +4,8 @@ QuESt command line interface.
 import os
 import argparse
 import yaml
-from quest.molecule import Molecule
+from .molecule import Molecule
+from . import driver
 
 
 parser = argparse.ArgumentParser(
@@ -49,3 +50,6 @@ with open(args.parameters, 'r') as inp_file:
 mol = Molecule(mol="".join(mol_lines), bas=params['qm']['basis_set'])
 mol.name = os.path.splitext(os.path.basename(args.molecule))[0]
 mol.print_out()
+
+# driver.compute_mp2(molecule, "aug-cc-pvdz")
+
