@@ -17,6 +17,7 @@ def response(g, C, F, nbas, nocc):
     E0 += 4 * np.einsum('aijb->iajb', g) - np.einsum("jiab->iajb", g) - \
         np.einsum("ajbi->iajb", g)
     E0 = E0[:nocc, nocc:, :nocc, nocc:]
+    E0 = E0.reshape(nocc * nvirt, nocc * nvirt)
 
     # concise version
     """
@@ -29,4 +30,4 @@ def response(g, C, F, nbas, nocc):
 
     E = E.reshape(nocc * nvirt, nocc * nvirt)
 
-    return E
+    return E0
