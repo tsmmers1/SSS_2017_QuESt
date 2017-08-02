@@ -23,6 +23,8 @@ def response(wfn):
     '''
     g = wfn.mints(ao_eri())
     F = wfn.arrays['F']
+
+    get_JK = None # TO BE ADDED
     C = wfn.arrays['C']
     
     L_ao = wfn.mints(ao_dipoles())
