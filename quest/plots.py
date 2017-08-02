@@ -9,7 +9,7 @@ import matplotlib.pyplot as plt
 
 def mc_energyplot(energy_array):
 
-        """
+    """
         Plots the energy array.
         Parameters
         ----------
@@ -24,7 +24,7 @@ def mc_energyplot(energy_array):
     """
     
 
-    plt.plot(energy_array, "r-", label ="energy")
+    plt.plot(energy_array, "r-", label="energy")
 
     plt.xlabel("No. of steps")
     plt.ylabel("Total Energy (kJ/mol)")
