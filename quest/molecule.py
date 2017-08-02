@@ -47,6 +47,8 @@ class Molecule(object):
 
         if mol is not None:
             self.set_geometry(mol)
+            
+        bas_name = psi4.core.BasisSet.name(bas)
 
         # Calculate the number of doubly occupied orbitals and the number of electrons
         self.nel = sum(self.mol.Z(n) for n in range(self.mol.natom()))
