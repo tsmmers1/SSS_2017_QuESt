@@ -9,7 +9,8 @@ from . import solvers
 from . import jk
 
 def compute_rhf(wfn):
-    """Compute the RHF energy with options to use DIIS and compute JK using DF algorithms.
+    """Compute the RHF energy with options to use DIIS and compute JK using
+    DF algorithms.
 
     Parameters
     ---------
@@ -19,7 +20,8 @@ def compute_rhf(wfn):
     Returns
     ---------
     wfn.energies["scf_energy"] : double
-        The total energy that is finally stored in the energies dictionary under the Wavefunction class.
+        The total energy that is finally stored in the energies dictionary
+        under the Wavefunction class.
 
     Raises
     ---------
@@ -46,6 +48,10 @@ def compute_rhf(wfn):
 
     Examples
     ---------
+    >>>wfn = wavefunction.Wavefunction(mol, options)
+    >>>scf_module.compute_rhf(wfn)
+        The options specified under 'Notes' must be in the parameters file
+        or passed directly to the Wavefunction object before scf can be run.
 
     """
     nbf = wfn.mints.nbf()
