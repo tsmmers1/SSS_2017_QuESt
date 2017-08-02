@@ -45,9 +45,8 @@ args = parser.parse_args()
 with open(args.parameters, 'r') as inp_file:
     params = yaml.load(inp_file)
 
-# Create molecule object, assign basis set and name
+# Create molecule object and assign basis set
 mol = Molecule(mol=mollib[args.molecule], bas=params['qm']['basis_set'])
-mol.name = os.path.splitext(os.path.basename(args.molecule))[0]
 mol.mol.print_out()
 
 # driver.compute_mp2(molecule, "aug-cc-pvdz")
