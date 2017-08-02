@@ -1,7 +1,7 @@
 import numpy as np
 import scipy.sparse.linalg as spla
 import scipy as sp
-
+from hessian_builders import *
 
 
 
@@ -29,11 +29,12 @@ def response(g, F, C, L, R, nocc):
     nvirt = nbas - nocc 
     opeartor_vs = 1
     if operator_vs == 0:
+        E = get_E(F, g, nocc, nbas)
         E_inv_R = np.linalg.solve(E,R.T)
     elif operator_vs == 1:
-        E_kappa = E_kappa_MO(F, g, C, nocc, nvirt)
+        E_kappa = E_kappa_MO(F, g, nocc, nbas)
         E_inv_R = spla.cg(E_kappa, R)
     elif operator_vs == 2:
-        E_kappa = E_kappa_MO(F, g, C, get_JK, nocc, nvirt)
+        E_kappa = E_kappa_AO(F, g, C, get_JK, nocc, nbas)
         E_inv_R = spla.cg(E_kappa, R)
-    return np.dot(L, E_inv_R)
+    return L @ E_inv_R
