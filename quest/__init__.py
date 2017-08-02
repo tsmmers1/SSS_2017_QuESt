@@ -8,6 +8,7 @@ from . import jk
 from . import solvers
 from . import core
 from . import mp2
+from . import mollib
 
 
 # Make sure Psi4 respects the global OMP_NUM_THREADS
