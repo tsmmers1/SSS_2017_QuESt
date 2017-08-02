@@ -34,5 +34,5 @@ pip install -e .
 
 
 ## Testing
-Tests can be run using `py.test-v`.
+Tests can be run using `py.test -v`.
 
