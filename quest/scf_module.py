@@ -19,8 +19,44 @@ def compute_JK(g, D, version):
 
 
 def compute_rhf(wfn):
-    """
-    Add docs here!
+    """Compute the RHF energy with options to use DIIS and compute JK using DF algorithms.
+
+    Parameters
+    ---------
+    wfn : QuESt Wavefunction class
+        Should be initialized before computing RHF energy.
+
+    Returns
+    ---------
+    wfn.energies["scf_energy"] : double
+        The total energy that is finally stored in the energies dictionary under the Wavefunction class.
+
+    Raises
+    ---------
+    Exception
+        More than 100 basis functions.
+    Exception
+        When max_diis is less than 1.
+
+    Notes
+    ---------
+    Parameters found in options dictionary:
+    nel : int
+        Used to calculate the number of doubly occupied orbitals
+    max_iter : int
+        Used to set the range for the SCF loop
+    diis : bool
+        Used to toggle diis
+    max_diis : int
+        Used to limit the number of Fock matrices used in DIIS
+    e_conv : double
+        Used as SCF energy convergence criterion
+    d_conv : double
+        Used as SCF gradient convergence criterion
+
+    Examples
+    ---------
+
     """
     nbf = wfn.mints.nbf()
 
