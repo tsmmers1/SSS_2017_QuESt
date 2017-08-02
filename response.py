@@ -19,6 +19,4 @@ def response(g, F, C, L, R, nocc):
     elif operator_vs == 2:
         E_kappa = E_kappa_MO(F, g, C, get_JK, nocc, nvirt)
         E_inv_R = spla.cg(E_kappa, R)
-    return np.dot(L, E_inv_R) 
-
-
+    return np.dot(L, E_inv_R)
