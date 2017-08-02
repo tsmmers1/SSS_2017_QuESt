@@ -30,3 +30,6 @@ class WaveFunction(object):
         # Possible integrals: J and K
         self.integrals = {}
         self.coefficients = np.array()
+
+        # The Fock matrix history for DIIS people
+        self.Fock_history = []
