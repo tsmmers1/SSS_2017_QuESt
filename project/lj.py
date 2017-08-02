@@ -27,10 +27,10 @@ def lj_fit(molecule, returnAll=False):
     for i, distance in enumerate(distances):
         # construct molecule w/ correct distance
         mol_geom = geom_string.format(atom_str, atom_str, distance)
-        print(mol_geom)
         #new_mol.set_geometry(mol_geom)
         # call MP2 on molecule and get energy
-        # DO LATER
+        # scf_wfn = scf( some arguments )
+        # mp2_wfn = mp2(scf_wfn)
         energy = distance
         # add MP2 energy to energies list
         energies[i] = energy
