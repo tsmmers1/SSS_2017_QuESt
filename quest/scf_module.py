@@ -4,6 +4,7 @@ An SCF module
 
 import numpy as np
 import psi4
+import solvers
 import time
 
 
@@ -17,7 +18,7 @@ def compute_JK(g, D, version):
     return J, K
 
 
-def compute_rhf(wfn, df=True, diis=True, maxiter=25, e_conv=1.e-6, d_conv=1.e-6):
+def compute_rhf(wfn):
     """
     Add docs here!
     """
@@ -44,7 +45,7 @@ def compute_rhf(wfn, df=True, diis=True, maxiter=25, e_conv=1.e-6, d_conv=1.e-6)
 
     # Grab the number of doubly occupied orbs
     ndocc = int(wfn.options["nel"] / 2)
-    
+
 
     # An internal diaognalize function
     def diag(F, A):
@@ -68,7 +69,7 @@ def compute_rhf(wfn, df=True, diis=True, maxiter=25, e_conv=1.e-6, d_conv=1.e-6)
 
     # Roothan iterations
     print('\nStarting SCF iterations:\n')
-    for iteration in range(maxiter):
+    for iteration in range(wfn.options["max_iter"]):
         J, K = compute_JK(g, D, "conv")
 
         # Fock Matrix and gradient
@@ -76,7 +77,7 @@ def compute_rhf(wfn, df=True, diis=True, maxiter=25, e_conv=1.e-6, d_conv=1.e-6)
         grad = F @ D @ S - S @ D @ F
         grad_rms = np.mean(grad**2)**0.5
 
-        if diis:
+        if wfn.options['diis'] and iteration >= 2:
             # Do DIIS
             F_list.append(F)
             diis_grad = A.T @ grad @ A
@@ -85,13 +86,23 @@ def compute_rhf(wfn, df=True, diis=True, maxiter=25, e_conv=1.e-6, d_conv=1.e-6)
             DIIS_grad.append(diis_grad)
 
             # Manipulate the DIIS graidents
-            #if len(diis_grad) > wfn.options['max_diis']:
-            #    index = grad_rms_list.index(max(grad_rms_list[:-1]))
-            #    F_list.pop(index)
-            #    DIIS_grad.pop(index)
-            #    grad_rms_list.pop(index)
+            if wfn.options['max_diis'] < 2:
+                raise Exception("When using diis, max_diis must be at least 1!")
+            if len(grad_rms_list) > wfn.options['max_diis']:
+                print("len(grad_rms_list) is", len(grad_rms_list));
+                index = grad_rms_list.index(max(grad_rms_list[:-1]))
+                F_list.pop(index)
+                DIIS_grad.pop(index)
+                grad_rms_list.pop(index)
 
-            F = diis(F_list, DIIS_grad)
+            F = solvers.DIIS_step(F_list, DIIS_grad)
+
+        elif wfn.options['diis'] and iteration < 2:
+            F_list.append(F)
+            diis_grad = A.T @ grad @ A
+            grad_rms = np.mean(diis_grad**2)**0.5
+            grad_rms_list.append(grad_rms)
+            DIIS_grad.append(diis_grad)
 
         else:
             # Use damping of the Fock matrix
@@ -110,7 +121,7 @@ def compute_rhf(wfn, df=True, diis=True, maxiter=25, e_conv=1.e-6, d_conv=1.e-6)
         Cocc = C[:, :ndocc]
         D = Cocc @ Cocc.T
 
-        if (SCF_E - SCF_E_old < e_conv) and (grad_rms < d_conv):
+        if (SCF_E - SCF_E_old < wfn.options['e_conv']) and (grad_rms < wfn.options['d_conv']):
             break
 
         SCF_E_old = SCF_E
@@ -124,6 +135,6 @@ def compute_rhf(wfn, df=True, diis=True, maxiter=25, e_conv=1.e-6, d_conv=1.e-6)
     wfn.arrays['fock_matrix'] = F
     wfn.arrays['density'] = D
     wfn.arrays['coefficients'] = C
+    wfn.arrays['eps'] = eps
 
     return wfn.energies["scf_energy"]
-    # wfn.arrays['grad_rms'] = grad_rms
