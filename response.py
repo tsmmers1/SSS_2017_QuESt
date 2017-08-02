@@ -1,33 +1,20 @@
 import numpy as np
 import scipy.sparse.linalg as spla
 
-# modules that need interaction w/ other grps
-from scf_utils import xform_2, xform_4
-
-def response(g, C, F, nbas, nocc):
-    nvirt = nbas - nocc
-    F = xform_2(F, C)
-    g = xform_4(g, C)
-    print(nbas, nocc, F.shape, g.shape)
-
-    # original version
-    E0 = np.zeros([nbas, nbas, nbas, nbas])
-    E0 += np.einsum('ij,ab->iajb', np.eye(nbas), F)
-    E0 -= np.einsum('ab,ij->iajb', np.eye(nbas), F)
-    E0 += 4 * np.einsum('aijb->iajb', g) - np.einsum("jiab->iajb", g) - \
-        np.einsum("ajbi->iajb", g)
-    E0 = E0[:nocc, nocc:, :nocc, nocc:]
-    E0 = E0.reshape(nocc * nvirt, nocc * nvirt)
-
-    # concise version
-    """
-    E = -F.reshape(1, nbas, 1, nbas)[:, :nvirt, :, :nvirt] + \
-        F.reshape(nbas, 1, nbas, 1)[:nocc, :, :nocc, :] + \
-        4. * g[:nocc, :nvirt, :nocc, :nvirt] - \
-        g[:nocc, :nocc, :nvirt, :nvirt].swapaxes(1, 2) -\
-        g[:nvirt, :nocc, :nvirt, :nocc].swapaxes(0, 3).swapaxes(1, 2)
-    """
-
-    E = E.reshape(nocc * nvirt, nocc * nvirt)
-
-    return E0
+def response(g, F, C, L, R, nocc):
+    '''
+    Calculates the CPHF response.
+    Expects the eri 4-tensor, g,  the Fock matrix, F, the MO coeefcient matrix, C, the left and right response tensors, L and R, and the occupation number, nocc.
+    '''
+    nbas = F.shape[0]
+    nvirt = nbas - nocc 
+    opeartor_vs = 1
+    if operator_vs == 0:
+        E_inv_R = np.linalg.solve(E,R.T)
+    elif operator_vs == 1:
+        E_kappa = E_kappa_MO(F, g, nocc, nvirt)
+        E_inv_R = spla.cg(E_kappa, R)
+    elif operator_vs == 2:
+        E_kappa = E_kappa_MO(F, g, C, get_JK, nocc, nvirt)
+        E_inv_R = spla.cg(E_kappa, R)
+    return np.dot(L, E_inv_R)
