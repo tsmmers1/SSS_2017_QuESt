@@ -13,6 +13,6 @@ def test_lj_fit():
 
 def test_get_lj_params():
     mol_psi = psi4.geometry("He")
-    test = molecule.Molecule(mol_psi, "sto-3g")
+    test = molecule.Molecule(mol_psi, "aug-cc-pvdz")
     s, a, b, e, d = build_lj_params(test, True)
     assert abs(s - 2.8) <= 1
