@@ -8,8 +8,8 @@ from . import jk
 from . import solvers
 from . import core
 from . import mp2
-
 from .mollib import mollib
+from . import lj
 from .molecule import Molecule
 from .wavefunction import Wavefunction
 
