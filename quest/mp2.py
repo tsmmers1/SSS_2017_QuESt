@@ -10,17 +10,18 @@ def df_mp2(wfn):
     pass
 
 
-def _mo_transform(orbital_energies):
+def _mo_transform():
     
     pass
 
 
-def _denom(fock_matrix):
+def _denom(wfn):
     #get energies from fock matrix)
     #multiply C and F to get 
     eps = wfn.arrays.get("EPSILON", None )
     if eps != None:
-        nocc = 5 #must pull from wavefunction when implemented
+        #must pull nocc from wavefunction when implemented
+        nocc = 5
         eocc = eps[:nocc]
         evir = eps[nocc:]
         e_denom = 1 / (eocc.reshape(-1, 1, 1, 1) - evir.reshape(-1, 1, 1) + eocc.reshape( -1, 1) - evir)
