@@ -60,9 +60,9 @@ def compute_rhf(wfn):
     # Roothan iterations
     print('\nStarting SCF iterations:\n')
 
-    jk = jk.build_JK(wfn.mints, "PK")
+    jk_calc = jk.build_JK(wfn.mints, "PK")
     for iteration in range(wfn.options["max_iter"]):
-        J, K = jk.jk_compute_JK(Cocc)
+        J, K = jk_calc.compute_JK(Cocc)
         # Fock Matrix and gradient
         F = H + 2.0 * J - K
         grad = F @ D @ S - S @ D @ F
