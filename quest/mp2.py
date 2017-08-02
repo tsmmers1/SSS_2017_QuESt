@@ -60,7 +60,19 @@ def df_mp2(wavefunction):
         On return this will be the input `wavefunction` with MP2 energy
         quantities added to the `wavefunction.energies` dictionary.
     """
-    pass
+    nocc = wavefunction.nocc
+    orbital_energies = wavefunction.arrays['eps']
+    occ_orbital_energies = orbital_energies[:nocc]
+    vir_orbital_energies = orbital_energies[nocc:]
+    # TODO: How should I get this?
+    DF_3index = None
+    mp2_cor_e = _compute_DF_e(occ_orbital_energies, vir_orbital_eergies,
+            DF_3index)
+    scf_e = wavefunction.energies['scf_e']
+    mp2_total_e = mp2_cor_e + scf_e
+    wavefunction.energies['mp2_correlation_e'] = mp2_cor_e
+    wavefunction.energies['mp2_e'] = mp2_total_e
+    return mp2_total_e, wavefunction
 
 
 def _mo_transform(g, C, nocc):
@@ -134,5 +146,44 @@ def _compute_conv_e(g_iajb, e_denom):
     return E_mp2
 
 
-def _compute_DF_e():
-    pass
+def _compute_DF_e(eps_occ, eps_vir, Qov):
+    """Computes the density fitted mp2 energy
+
+    Parameters
+    ----------
+    eps_occ: numpy array
+        The occupied slice of the orbital energies
+
+    eps_vir: numpy array
+        The virtual slice of the orbital energies
+
+    Qov: numpy array
+        The 3-index transformed integral tensor
+
+    Returns
+    -------
+    dfmp2_corr: float
+        The dfmp2 correlation energy
+    """
+    vv_denom = -eps_vir.reshape(-1, 1) - eps_vir
+
+    MP2corr_OS = 0.0
+    MP2corr_SS = 0.0
+
+    for i in range(nocc):
+        eps_i = eps_occ[i]
+        i_Qv = Qov[:, i, :].copy()
+        for j in range(i, nocc):
+            eps_j = eps_occ[j]
+            j_Qv = Qov[:, j, :]
+            tmp = np.dot(i_Qv.T, j_Qv)
+            if i == j:
+                div = 1.0 / (eps_i + eps_j + vv_denom)
+            else:
+                div = 2.0 / (eps_i + eps_j + vv_denom)
+
+            MP2corr_OS += np.einsum('ab,ab,ab->', tmp, tmp, div)
+            MP2corr_SS += np.einsum('ab,ab,ab->', tmp - tmp.T, tmp, div)
+
+    dfmp2_corr = MP2corr_SS + MP2corr_OS
+    return dfmp2_corr
