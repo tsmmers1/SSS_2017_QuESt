@@ -47,15 +47,15 @@ def get_coeffs(distances, energies):
     returns coefficients A for the r^12 term and B for the r^6 term
     """
 
-    powers = [-12, -6]
+    powers = [-12.0, -6.0]
     r_power = np.power(np.array(distances).reshape(-1,1), powers) 
     A,B = np.linalg.lstsq(r_power, energies)[0]
     return A,B
 
 if __name__=='__main__':
-    distances = [2,3,4,5,6,7]
-    energies = [2,0,-1,-1,2,4]
-    A,B = get_coeffs(distances, energies)
+    A = 148.0
+    B = 1.0
+    distances = np.arange(2.0, 10.0, 0.25)
+    energies = A/(distances ** 12.0) - B/(distances ** 6.0)
+    A, B = get_coeffs(distances, energies)
     print(A, B)
-
-
