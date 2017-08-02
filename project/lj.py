@@ -5,11 +5,11 @@ import numpy as np
 
 # atom - Input molecule (should be one atom)
 # returnAll - Returns coefficients and energies/distances in addition to sigma if True
-def lj(molecule, returnAll):
+def lj(molecule, returnAll=False):
     # stuff to return (change later)
-    sigma = 0.5
-    A = 2
-    B = 2
+    sigma = 0
+    A = 0
+    B = 0
     # set up distances for PES
     start = 2.0
     stop = 10.0
@@ -19,7 +19,8 @@ def lj(molecule, returnAll):
     # do MP2 on each distance in the array
     for i, distance in enumerate(distances):
         # construct molecule w/ correct distance
-        # molecule_updated = .format()
+        #molecule_updated = .format()
+        #molecule.set_geometry( # psi4 
         # call MP2 on molecule
         energy = distance
         # add MP2 energy to energies list
@@ -30,3 +31,8 @@ def lj(molecule, returnAll):
         return sigma
 
 
+def get_atom(molecule):
+    # call
+    # molecule.mol()
+    # figure out how to get identity of molecule here!!
+    return "He"
