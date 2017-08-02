@@ -102,9 +102,9 @@ def compute_rhf(wfn):
     # Roothan iterations
     print('\nStarting SCF iterations:\n')
 
-    jk = jk.build_JK(wfn.mints, "PK")
+    jk_calc = jk.build_JK(wfn.mints, "PK")
     for iteration in range(wfn.options["max_iter"]):
-        J, K = jk.jk_compute_JK(Cocc)
+        J, K = jk_calc.compute_JK(Cocc)
         # Fock Matrix and gradient
         F = H + 2.0 * J - K
         grad = F @ D @ S - S @ D @ F
@@ -165,9 +165,9 @@ def compute_rhf(wfn):
     print('Final SCF energy: %.8f hartree' % SCF_E)
 
     wfn.energies['scf_energy'] = SCF_E
-    wfn.arrays['fock_matrix'] = F
-    wfn.arrays['density'] = D
-    wfn.arrays['coefficients'] = C
+    wfn.arrays['F'] = F
+    wfn.arrays['D'] = D
+    wfn.arrays['C'] = C
     wfn.arrays['eps'] = eps
 
     return wfn.energies["scf_energy"]

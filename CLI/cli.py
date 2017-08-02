@@ -4,9 +4,9 @@ QuESt command line interface.
 import os
 import argparse
 import yaml
-from molecule import Molecule
-from mollib import mollib
-# from . import driver
+import quest
+from quest.molecule import Molecule
+from quest.mollib import mollib
 
 
 parser = argparse.ArgumentParser(
@@ -27,7 +27,7 @@ QuESt: Quantum Energy and Stuff
     """,
     formatter_class=argparse.RawDescriptionHelpFormatter)
 
-default_params = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'default_params.yml')
+default_params = quest.default_params
 
 parser.add_argument('--molecule', '-m', type=str, default='h2o', metavar='',
                     help='Molecule file name (default: h2o)')
