@@ -16,8 +16,18 @@ def test_mp2():
     """)
     basis = "STO-3G"
     mol = quest.Molecule(geometry, basis)
-    wafu = quest.Wavefunction(mol, {})
-    scf_energy = quest.scf_module.compute_rhf(wafu, diis=False)
+    rhf_options = \
+    {
+        'e_conv': 1.e-8,
+        'd_conv': 1.e-8,
+        'diis': True,
+        'max_diis': 7,
+        'max_iter': 100,
+    }
+
+    wafu = quest.Wavefunction(mol, rhf_options)
+
+    scf_energy = quest.scf_module.compute_rhf(wafu)
     mp2_energy = quest.mp2.mp2(wafu)
 
     psi4.set_options({"scf_type": "pk", "mp2_type": "conv"})

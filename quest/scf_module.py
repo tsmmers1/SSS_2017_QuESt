@@ -4,9 +4,9 @@ An SCF module
 
 import numpy as np
 import psi4
-import solvers
 import time
-import jk
+from . import solvers
+from . import jk
 
 def compute_rhf(wfn):
     """Compute the RHF energy with options to use DIIS and compute JK using DF algorithms.
