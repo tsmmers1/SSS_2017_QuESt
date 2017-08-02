@@ -1,8 +1,8 @@
 """
-This file tests the JK file in the project.
+This file tests the JK file in the quest.
 """
 
-import project
+import quest
 import pytest
 import psi4
 import numpy as np
@@ -18,7 +18,7 @@ H 1 1.1 2 104
 
     basis = psi4.core.BasisSet.build(molecule, "ORBITAL", "STO-3G")
     mints = psi4.core.MintsHelper(basis)
-    jk = project.jk.build_JK(mints, "PK")
+    jk = quest.jk.build_JK(mints, "PK")
 
     Cocc = np.random.rand(mints.nbf(), 5)
     D = np.dot(Cocc, Cocc.T)
