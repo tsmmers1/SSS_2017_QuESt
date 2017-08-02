@@ -19,7 +19,7 @@ class Wavefunction(object):
     options : dictionary 
         Stores various options, including the basis name.
     mints : psi4.core.MintsHelper
-        Psi4 BasisSet object 
+        Psi4 mints object 
     energies : dictionary 
         Stores various energies that have been calculated (including scf,
         nuclear, mp2, etc.).
@@ -29,7 +29,7 @@ class Wavefunction(object):
 
     Examples
     -------
-    >>>h2o = Wavefunction(mol)
+    >>>h2o_wf = Wavefunction(mol)
     Creates an instance of the Wavefunction class called h2o
     """
 
