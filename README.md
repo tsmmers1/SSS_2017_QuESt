@@ -1,7 +1,7 @@
 
 <p align="center">
-<a href="(https://travis-ci.org/MolSSI-SSS/SSS_2017_QuESt.svg?branch=master)">
-  <img src="https://travis-ci.org/MolSSI-SSS/SSS_2017_QuESt" alt="Travis CI"/>
+<a href="https://travis-ci.org/MolSSI-SSS/SSS_2017_QuESt">
+  <img src="https://travis-ci.org/MolSSI-SSS/SSS_2017_QuESt.svg?branch=master" alt="Travis CI"/>
 </a>
 <a href="https://codecov.io/gh/MolSSI-SSS/SSS_2017_QuESt">
   <img src="https://codecov.io/gh/MolSSI-SSS/SSS_2017_QuESt/branch/master/graph/badge.svg" alt="Codecov" />
