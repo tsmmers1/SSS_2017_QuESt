@@ -21,7 +21,7 @@ def test_helper_PCG_direct():
     tol = 1e-14
     x0 = np.zeros(n)
     M = np.ones_like(A)
-    x1 = quest.solver.helper_PCG_direct(A, b, tol, max_iteration, x0, M)
+    x1 = quest.solvers.helper_PCG_direct(A, b, tol, max_iteration, x0, M)
     
     # Check our solution vs. numpy
     print(" Solution matches with numpy's cg solver: %s" % np.allclose(x, x1, 1e-9))
