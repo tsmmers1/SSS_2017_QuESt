@@ -6,17 +6,7 @@ import numpy as np
 import psi4
 import solvers
 import time
-
-
-def compute_JK(g, D, version):
-    if version == "conv":
-        J = np.einsum("pqrs,rs->pq", g, D)
-        K = np.einsum("prqs,rs->pq", g, D)
-    else:
-        raise KeyError("Key %s not recognized" % version)
-
-    return J, K
-
+import jk
 
 def compute_rhf(wfn):
     """Compute the RHF energy with options to use DIIS and compute JK using DF algorithms.
@@ -105,9 +95,10 @@ def compute_rhf(wfn):
 
     # Roothan iterations
     print('\nStarting SCF iterations:\n')
-    for iteration in range(wfn.options["max_iter"]):
-        J, K = compute_JK(g, D, "conv")
 
+    jk = jk.build_JK(wfn.mints, "PK")
+    for iteration in range(wfn.options["max_iter"]):
+        J, K = jk.jk_compute_JK(Cocc)
         # Fock Matrix and gradient
         F = H + 2.0 * J - K
         grad = F @ D @ S - S @ D @ F
