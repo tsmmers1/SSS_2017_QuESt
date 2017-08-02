@@ -1,8 +1,8 @@
 import numpy as np
 import psi4
 from . import molecule
-from . import wavefunction as wf
-from . import scf
+from . import wavefunction as wfn
+from . import scf_module
 from . import mp2
 
 
@@ -50,7 +50,7 @@ def build_lj_params(mol, returnAll=False):
         new_mol.set_geometry(mol_geom)
         new_mol.set_basis(mol.bas_name)
         # call MP2 on molecule and get energy
-        ref_wfn = wf.Wavefunction(new_mol)
+        ref_wfn = wfn.Wavefunction(new_mol)
         scf.RHF(new_mol, new_mol.bas_name)
         rhf.compute_energy()
         mp2_wfn = mp2(ref_wfn)

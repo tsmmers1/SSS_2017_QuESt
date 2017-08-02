@@ -1,8 +1,9 @@
 """
 Drives modules
 """
-import mp2
-import scf
+
+from . import mp2
+from . import scf
 
 
 def compute_mp2(molecule, basis="aug-cc-pvdz"):
