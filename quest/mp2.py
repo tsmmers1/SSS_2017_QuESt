@@ -1,81 +1,138 @@
+"""MP2 energy functions
+
+Notes
+-----
+This module provides functions for computing MP2 corrected energies. The module
+provides two interfaces mp2, and df_mp2 for computing conventional and density
+fitted MP2 energies respectively.
+
 """
-MP2 This is a sample mp2 file for testing.
-"""
-import time
 import numpy as np
-import psi4
 
 
-def mp2(mol, basis="aug-cc-pvdz"):
+def mp2(wavefunction):
+    """MP2 energy using conventional ERIs
 
-    print('\nStarting MP2...')
-    # Memory for Psi4 in GB
-    psi4.set_memory('2 GB')
-    psi4.core.set_output_file('output.dat', False)
+    Parameters
+    ----------
+    wavefunction: Wavefunction object
+        Input `wavefunction` should have MO coefficients and orbital energies
+        in `wavefunction.arrays` dictionary.
 
-    # Memory for numpy in GB
-    numpy_memory = 2
+    Returns
+    --------
+    mp2_energy: float
+        The mp2 energy, scf_energy + mp2 correlation energy
+    wavefunction: Wavefunction object
+        On return this will be the input `wavefunction` with MP2 energy
+        quantities added to the `wavefunction.energies` dictionary.
 
-    psi4.set_options({'basis': basis,
-                      'scf_type': 'pk',
-                      'mp2_type': 'conv',
-                      'e_convergence': 1e-8,
-                      'd_convergence': 1e-8})
+    """
+    g_ao = np.asarray(wavefunction.mints.ao_eri())
+    orbital_energies = np.asarray(wavefunction.arrays['eps'])
+    C = np.asarray(wavefunction.arrays['C'])
+    num_occ_orbs = wavefunction.nel
+    g_mo = _mo_transform(g_ao, C, num_occ_orbs)
+    D = _denom(orbital_energies, num_occ_orbs)
 
-    # First compute SCF energy using Psi4
-    scf_e, wfn = psi4.energy('SCF', return_wfn=True)
-
-    # Grab data from wavfunction class
-    ndocc = wfn.nalpha()
-    nmo = wfn.nmo()
-    SCF_E = wfn.energy()
-    eps = np.asarray(wfn.epsilon_a())
-
-    # Compute size of ERI tensor in GB
-    ERI_Size = (nmo ** 4) * 8e-9
-    print('Size of the ERI/MO tensor will be %4.2f GB.' % ERI_Size)
-    memory_footprint = ERI_Size * 2.5
-    if memory_footprint > numpy_memory:
-        clean()
-        raise Exception("Estimated memory utilization (%4.2f GB) exceeds numpy_memory \
-                        limit of %4.2f GB." % (memory_footprint, numpy_memory))
+    mp2_cor_e = _compute_conv_e(g_mo, D)
+    scf_e = wavefunction.energies['scf_e']
+    mp2_total_e = scf_e + mp2_cor_e
+    wavefunction.energies['mp2_correlation_e'] = mp2_cor_e
+    wavefunction.energies['mp2_e'] = mp2_total_e
+    return mp2_total_e, wavefunction
 
 
-    # Integral generation from Psi4's MintsHelper
-    mints = psi4.core.MintsHelper(wfn.basisset())
-    Co = wfn.Ca_subset("AO", "OCC")
-    Cv = wfn.Ca_subset("AO", "VIR")
-    MO = np.asarray(mints.mo_eri(Co, Cv, Co, Cv))
+def df_mp2(wavefunction):
+    """MP2 energy using Density fitted ERIs
 
-    Eocc = eps[:ndocc]
-    Evirt = eps[ndocc:]
+    Parameters
+    ----------
+    wavefunction: Wavefunction object
+        Input `wavefunction` should have MO coefficients and orbital energies
+        in `wavefunction.arrays` dictionary.
 
-    e_denom = 1 / (Eocc.reshape(-1, 1, 1, 1) - Evirt.reshape(-1, 1, 1) + Eocc.reshape(-1, 1) - Evirt)
-
-    # Get the two spin cases
-    MP2corr_OS = np.einsum('iajb,iajb,iajb->', MO, MO, e_denom)
-    MP2corr_SS = np.einsum('iajb,iajb,iajb->', MO - MO.swapaxes(1, 3), MO, e_denom)
-
-    MP2corr_E = MP2corr_SS + MP2corr_OS
-    MP2_E = SCF_E + MP2corr_E
-
-    print("MP2 Energy is : ",MP2_E)
-
-    return MP2_E
-
-if __name__ == "__main__":
-    import psi4
-    mol = psi4.geometry("""
-    O
-    H 1 1.1
-    H 1 1.1 2 104
-    symmetry c1
-    """)
-
-    MP2_E = mp2(mol, "aug-cc-pvdz")
-    print("Comparing MP2 energy with psi4...")
-    psi4.energy('MP2')
-    a = psi4.compare_values(psi4.core.get_variable('MP2 TOTAL ENERGY'), MP2_E, 6, 'MP2 Energy')
-    print(a)
+    Returns
+    --------
+    mp2_energy: float
+        The mp2 energy, scf_energy + mp2 correlation energy
+    wavefunction: Wavefunction object
+        On return this will be the input `wavefunction` with MP2 energy
+        quantities added to the `wavefunction.energies` dictionary.
+    """
+    pass
 
 
+def _mo_transform(g, C, nocc):
+    """Transform ERIs to the MO basis
+
+    Parameters
+    ----------
+    C: numpy array
+        The MO coefficients
+    g: numpy array
+        The AO basis, 4 index ERI tensor
+    nocc:
+        The number of occupied orbitals
+
+    Returns
+    -------
+    g_iajb: numpy array
+        The MO basis, 4 index ERI tensor. Shape will be (nocc, nvir, nocc,
+        nvir)
+    """
+    O = slice(None, nocc)
+    V = slice(nocc, None)
+    g_iajb = np.einsum('pQRS, pP -> PQRS',
+             np.einsum('pqRS, qQ -> pQRS',
+             np.einsum('pqrS, rR -> pqRS',
+             np.einsum('pqrs, sS -> pqrS',
+                g, C[:, V]), C[:, O]), C[:, V]), C[:, O])
+    return g_iajb
+
+
+def _denom(eps, nocc):
+    """Build the energy denominators 1/(eps_i + eps_j - eps_a - eps_b)
+
+    Parameters
+    ----------
+    eps: numpy array
+        The orbital energies, shape (nbf,)
+
+    nocc: int
+        The number of occupied orbitals
+
+    Returns
+    -------
+    e_denom: numpy array
+        The energy denominators with shape matching the MO ERIs (nocc, nvir,
+        nocc, nvir)
+    """
+    #get energies from fock matrix)
+    #multiply C and F to get
+    eps = wfn.arrays.get("EPSILON", None )
+    if eps != None:
+        #must pull nocc from wavefunction when implemented
+        eocc = eps[:nocc]
+        evir = eps[nocc:]
+        e_denom = 1 / (eocc.reshape(-1, 1, 1, 1) - evir.reshape(-1, 1, 1) + eocc.reshape( -1, 1) - evir)
+    else:
+        raise Exception ("orbital energy array  'EPSILON' doesn't exist")
+    return e_denom
+
+
+
+def _compute_conv_e(g_iajb, e_denom):
+    # OS = (ia|jb)(ia|jb)/(ei+ej-ea-eb)
+    os = np.einsum("iajb,iajb,iajb->", g_iajb, g_iajb, e_denom)
+    # build (ib|ja)
+    g_ibja = g_iajb.swapaxes(1, 3)
+    # SS = [(ia|jb)-(ib|ja)](ia|jb)/(ei+ej-ea-eb)
+    ss = np.einsum("iajb,iajb,ijab->", (g_iajb - g_ibja), g_iajb, e_denom)
+    # opposite spin, same spin
+    E_mp2 = os - ss
+    return E_mp2
+
+
+def _compute_DF_e():
+    pass

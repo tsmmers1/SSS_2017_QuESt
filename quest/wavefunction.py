@@ -9,29 +9,51 @@ class Wavefunction(object):
     """
     Basic wavefunction class
 
+    Parameters
+    -------
+    mol : QuESt Molecule class
+        Needs to have a basis set at least.
+    parameters : dictionary
+        Holds the starting QM parameters
+
     Attributes
     -------
-    options: dictionary with various options, including the basis name.
-    mints: contains a psi4 MintsHelper object built from the basis set.
-    energies: a dictionary of various energies that have been
-              calculated (including scf, nuclear, mp2, etc.).
-    arrays: a dictionary of various arrays (including a coefficient
-            matrix, a fock matrix, etc.)
+    options : dictionary 
+        Initializes with qm options from parameters file, can be edited. 
+    mints : psi4.core.MintsHelper
+        Psi4 mints object 
+    energies : dictionary 
+        Stores various energies that have been calculated (including scf,
+        nuclear, mp2, etc.).
+    arrays : dictionary 
+        Stores various arrays (including a coefficient matrix, a fock matrix,
+        etc.)
+
+    Examples
+    -------
+    >>>h2o_wf = Wavefunction(mol)
+    Creates an instance of the Wavefunction class called h2o_wf
+
+    >>>self.options['ex_param'] = 5.0
+    Adds a new entry to the options dictionary named "ex_param" with value 5.0
     """
 
-    def __init__(self, mol):
+    def __init__(self, mol, parameters):
         """
         Initialize the Wavefunction class.
 
-        Parameters
-        ----------
-        mol: a Molecule class from the QuESt repository. Needs to
-             have a basis set at least.
         """
 
         # Set whichever options you would like. The only default is the
         # basis set name.
-        self.options = {'basis_name': mol.bas.name()}
+        self.options = parameters
+        self.options["nel"] = mol.nel
+
+        # !!!FIX ME !!!
+        self.options["max_diis"] = 6
+        
+        # Save the molecule
+        self.mol = mol
 
         # Build the mints object
         self.mints = psi4.core.MintsHelper(mol.bas)
