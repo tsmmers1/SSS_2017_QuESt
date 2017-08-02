@@ -26,7 +26,7 @@ def compute_rhf(wfn, df=True, diis=True, maxiter=25, e_conv=1.e-6, d_conv=1.e-6)
     if (nbf > 100):
         raise Exception("More than 100 basis functions!")
 
-    t = time.time()
+    start_time = time.time()
     # Build core hamiltonian and overlap matrix
     V = np.array(wfn.mints.ao_potential())
     T = np.array(wfn.mints.ao_kinetic())
@@ -43,7 +43,8 @@ def compute_rhf(wfn, df=True, diis=True, maxiter=25, e_conv=1.e-6, d_conv=1.e-6)
     A = np.array(A)
 
     # Grab the number of doubly occupied orbs
-    ndocc = wfn.options["ndocc"]
+    ndocc = int(wfn.options["nel"] / 2)
+    
 
     # An internal diaognalize function
     def diag(F, A):
@@ -63,7 +64,7 @@ def compute_rhf(wfn, df=True, diis=True, maxiter=25, e_conv=1.e-6, d_conv=1.e-6)
     grad_rms_list = []
     SCF_E_old = 0.0
     F_old = None
-    t = time.time()
+    start_time = time.time()
 
     # Roothan iterations
     print('\nStarting SCF iterations:\n')
@@ -84,11 +85,11 @@ def compute_rhf(wfn, df=True, diis=True, maxiter=25, e_conv=1.e-6, d_conv=1.e-6)
             DIIS_grad.append(diis_grad)
 
             # Manipulate the DIIS graidents
-            if len(diis_grad) > wfn.options['max_diis']:
-                index = grad_rms_list.index(max(grad_rms_list[:-1]))
-                F_list.pop(index)
-                DIIS_grad.pop(index)
-                grad_rms_list.pop(index)
+            #if len(diis_grad) > wfn.options['max_diis']:
+            #    index = grad_rms_list.index(max(grad_rms_list[:-1]))
+            #    F_list.pop(index)
+            #    DIIS_grad.pop(index)
+            #    grad_rms_list.pop(index)
 
             F = diis(F_list, DIIS_grad)
 
@@ -102,19 +103,20 @@ def compute_rhf(wfn, df=True, diis=True, maxiter=25, e_conv=1.e-6, d_conv=1.e-6)
 
 
         SCF_E = np.sum((F + H) * D)
-        print('SCF Iteration %3d: Energy = %4.16f   dE = % 1.5E   dRMS = %1.5E' % (iteration, SCF_E, (SCF_E - SCF_E_old))
+        SCF_E += wfn.mol.nuclear_repulsion_energy
+        print('SCF Iteration %3d: Energy = %4.16f   dE = % 1.5E   dRMS = %1.5E' % (iteration, SCF_E, (SCF_E - SCF_E_old), grad_rms))
 
         eps, C = diag(F, A)
         Cocc = C[:, :ndocc]
         D = Cocc @ Cocc.T
 
-        if (SCF_E - E_old < e_conv) and (grad_rms < d_conv):
+        if (SCF_E - SCF_E_old < e_conv) and (grad_rms < d_conv):
             break
 
         SCF_E_old = SCF_E
         F_old = F
 
-    print('Total time for SCF iterations: %.3f seconds \n' % (time.time() - t))
+    print('Total time for SCF iterations: %.3f seconds \n' % (time.time() - start_time))
 
     print('Final SCF energy: %.8f hartree' % SCF_E)
 

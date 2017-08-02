@@ -47,8 +47,11 @@ class Wavefunction(object):
         # Set whichever options you would like. The only default is the
         # basis set name.
         self.options = parameters
-        self.options["ndocc"] = mol.nel
+        self.options["nel"] = mol.nel
 
+        # !!!FIX ME !!!
+        self.options["max_diis"] = 6
+        
         # Save the molecule
         self.mol = mol
 

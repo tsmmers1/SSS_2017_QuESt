@@ -1,5 +1,5 @@
 """
-A small dictionary of molecules
+A small dictionary of mollib
 """
 
 water_molecule = """
@@ -10,5 +10,5 @@ H 1 1.1 2 104
 
 
 
-molecules = {}
-molecules["h2o"] = water_molecule
+mollib = {}
+mollib["h2o"] = water_molecule
