@@ -39,6 +39,9 @@ def compute_rhf(wfn, df=True, diis=True, maxiter=25, e_conv=1.e-6, d_conv=1.e-6)
     A.power(-0.5, 1.e-14)
     A = np.array(A)
 
+    # Grab the number of doubly occupied orbs
+    ndocc = wfn.options["ndocc"]
+
     # An internal diaognalize function
     def diag(F, A):
         Fp = A.T @ F @ A
@@ -48,7 +51,7 @@ def compute_rhf(wfn, df=True, diis=True, maxiter=25, e_conv=1.e-6, d_conv=1.e-6)
 
     # Form a desnity
     eps, C = diag(H, A)
-    Cocc = C[:, :n_el]
+    Cocc = C[:, :ndocc]
     D = Cocc @ Cocc.T
 
     # Start with a few defaults
@@ -96,7 +99,7 @@ def compute_rhf(wfn, df=True, diis=True, maxiter=25, e_conv=1.e-6, d_conv=1.e-6)
         E = np.sum((F + H) * D)
 
         eps, C = diag(F, A)
-        Cocc = C[:, :n_el]
+        Cocc = C[:, :ndocc]
         D = Cocc @ Cocc.T
 
         if (E - E_old < e_conv) and (grad_rms < d_conv):

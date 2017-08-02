@@ -47,6 +47,7 @@ class Wavefunction(object):
         # Set whichever options you would like. The only default is the
         # basis set name.
         self.options = parameters
+        self.options["ndocc"] = mol.nel
 
         # Build the mints object
         self.mints = psi4.core.MintsHelper(mol.bas)
