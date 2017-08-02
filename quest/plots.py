@@ -32,7 +32,6 @@ def mc_energyplot(energy_array):
     plt.title("Total energy vs steps")
     plt.legend(loc=1, fontsize= 'x-large')
     plt.show()
-    return
     
 
 
