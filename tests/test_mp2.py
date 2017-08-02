@@ -25,4 +25,4 @@ def test_mp2():
     psi4_mp2_energy = psi4.energy('mp2/' + basis, molecule=geometry)
 
     assert np.allclose(scf_energy, psi4_scf_energy)
-    # assert np.allclose(mp2_energy, psi4_mp2_energy)
+    assert np.allclose(mp2_energy, psi4_mp2_energy, 1e-4)
