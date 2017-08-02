@@ -2,11 +2,23 @@ import numpy as np
 
 
 
-def mp2(wfn):
+def mp2(wavefunction):
+    """
+    Conventional MP2 energy
+
+    Takes a quest.wavefunction.Wavefunction object, returns a wavefunction object
+    modifies the energy dict with the MP2_corr_E, MP2_E variables.
+    """
     pass
 
 
-def df_mp2(wfn):
+def df_mp2(wavefunction):
+    """
+    Density-Fitted MP2 energy
+
+    Takes a quest.wavefunction.Wavefunction object, returns a wavefunction object
+    modifies the energy dict with the MP2_corr_E, MP2_E variables
+    """
     pass
 
 
@@ -24,7 +36,7 @@ def _mo_transform(g, C, nocc):
     g_iajb = np.einsum('pQRS, pP -> PQRS',
         np.einsum('pqRS, qQ -> pQRS',
         np.einsum('pqrS, rR -> pqRS',
-        np.einsum('pqrs, sS -> pqrS', g, C[:,V]), C[:,O]), C[:,V]), C[:,O]) 
+        np.einsum('pqrs, sS -> pqrS', g, C[:,V]), C[:,O]), C[:,V]), C[:,O])
     return g_iajb
 
 
