@@ -25,7 +25,8 @@ def response(g, C, F, nbas, nocc):
         4. * g[:nocc, :nvirt, :nocc, :nvirt] - \
         g[:nocc, :nocc, :nvirt, :nvirt].swapaxes(1, 2) -\
         g[:nvirt, :nocc, :nvirt, :nocc].swapaxes(0, 3).swapaxes(1, 2)
-    E = E.reshape(nocc * nvirt, nocc * nvirt)
     """
+
+    E = E.reshape(nocc * nvirt, nocc * nvirt)
 
     return E
