@@ -3,6 +3,11 @@ codecov:
   notify:
     after_n_builds: 1
     require_ci_to_pass: no    
+
+coverage:
+  ignore:
+    - "setup.py"
+    - "test/.*"
   status:
     project:
       default:
@@ -10,7 +15,3 @@ codecov:
     patch:
       default:
         threshold: 50%
-coverage:
-  ignore:
-    - "setup.py"
-    - "test/.*"
