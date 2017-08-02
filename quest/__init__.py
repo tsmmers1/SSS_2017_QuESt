@@ -7,6 +7,7 @@ from . import scf
 from . import jk
 from . import solvers
 from . import core
+from . import mp2
 
 
 # Make sure Psi4 respects the global OMP_NUM_THREADS

@@ -48,8 +48,8 @@ class Molecule(object):
             self.set_geometry(mol)
 
         # Calculate the number of doubly occupied orbitals and the number of electrons
-        self.nel = sum(self.molecule.Z(n) for n in range(self.molecule.natom()))
-        self.nel -= self.molecule.molecular_charge()
+        self.nel = sum(self.mol.Z(n) for n in range(self.mol.natom()))
+        self.nel -= self.mol.molecular_charge()
         
         if not (self.nel / 2.0).is_integer():
             raise ValueError("Molecule must have an even number of electrons to perform RHF.")
@@ -74,16 +74,16 @@ class Molecule(object):
 
         """
 
-        if isinstance(mol, geom_str):
-            self.mol = psi4.geometry(mol)
-        elif isinstance(mol, psi4.core.Molecule):
-            self.mol = mol
+        if isinstance(geom_str, str):
+            self.mol = psi4.geometry(geom_str)
+        elif isinstance(geom_str, psi4.core.Molecule):
+            self.mol = geom_str
         else:
-            raise TypeError("Input molecule of type %s is not understood" % type(mol))
+            raise TypeError("Input molecule of type %s is not understood" % type(geom_str))
 
         self.mol.update_geometry()
 
-    def set_basis(bas_str):
+    def set_basis(self, bas_str):
         """
         Set the basis set.
 
