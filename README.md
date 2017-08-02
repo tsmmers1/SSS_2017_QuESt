@@ -15,7 +15,7 @@ summer school.
 ## Installation
 To install you first need the MolSSI 2017 Software Summer School stack.
 Directions can be found
-[here](https://molssi-sss.github.io/Logistics_SSS_2017/Setup.html)/
+[here](https://molssi-sss.github.io/Logistics_SSS_2017/Setup.html).
 
 To build the C++ side of this project, please run:
 ```
