@@ -83,7 +83,7 @@ class Molecule(object):
 
         self.mol.update_geometry()
 
-    def set_basis(bas_str):
+    def set_basis(self, bas_str):
         """
         Set the basis set.
 
