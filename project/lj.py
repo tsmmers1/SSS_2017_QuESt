@@ -53,9 +53,7 @@ def get_coeffs(distances, energies):
     return A,B
 
 if __name__=='__main__':
-    A = 148.0
-    B = 1.0
-    distances = np.arange(2.0, 10.0, 0.25)
-    energies = A/(distances ** 12.0) - B/(distances ** 6.0)
-    A, B = get_coeffs(distances, energies)
+    distances = [2,3,4,5,6,7]
+    energies = [2,0,-1,-1,2,4]
+    A,B = get_coeffs(distances, energies)
     print(A, B)
