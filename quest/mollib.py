@@ -1,5 +1,5 @@
 """
-A small dictionary of molecules
+A small dictionary of mollib
 """
 
 water_molecule = """
@@ -74,10 +74,10 @@ D1 = 180.0
 D2 = 0.0
 """
 
-molecules = {}
-molecules["h2o"] = water_molecule
-molecules["co"] = co_molecule
-molecules["co2"] = co2_molecule
-molecules["c2h2"] = acetylene_molecule
-molecules["c2h4"] = ethylene_molecule
-molecules["c6h6"] = benzene_molecule
+mollib = {}
+mollib["h2o"] = water_molecule
+mollib["co"] = co_molecule
+mollib["co2"] = co2_molecule
+mollib["c2h2"] = acetylene_molecule
+mollib["c2h4"] = ethylene_molecule
+mollib["c6h6"] = benzene_molecule
