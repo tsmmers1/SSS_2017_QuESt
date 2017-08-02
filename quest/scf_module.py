@@ -159,9 +159,9 @@ def compute_rhf(wfn):
     print('Final SCF energy: %.8f hartree' % SCF_E)
 
     wfn.energies['scf_energy'] = SCF_E
-    wfn.arrays['fock_matrix'] = F
-    wfn.arrays['density'] = D
-    wfn.arrays['coefficients'] = C
+    wfn.arrays['F'] = F
+    wfn.arrays['D'] = D
+    wfn.arrays['C'] = C
     wfn.arrays['eps'] = eps
 
     return wfn.energies["scf_energy"]
