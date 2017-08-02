@@ -10,6 +10,7 @@ codecov:
     patch:
       default:
         threshold: 50%
-ignore:
- - "setup.py"
- - "test/"
+coverage:
+  ignore:
+    - "setup.py"
+    - "test/.*"

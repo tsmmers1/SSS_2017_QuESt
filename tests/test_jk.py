@@ -9,6 +9,7 @@ import numpy as np
 
 psi4.set_output_file("output.dat", True)
 
+
 def test_PKJK():
     molecule = psi4.geometry("""
 O
@@ -30,5 +31,3 @@ H 1 1.1 2 104
     J, K = jk.compute_JK(Cocc)
     assert np.allclose(J_ref, J)
     assert np.allclose(K_ref, K)
-
-    
