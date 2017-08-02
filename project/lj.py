@@ -40,5 +40,22 @@ def lj_fit(molecule, returnAll=False):
     else:
         return sigma
 
+def get_coeffs(distances, energies):
+    """
+    Takes a list of distances and corresponding energies 
+    perform a list squares fitting and 
+    returns coefficients A for the r^12 term and B for the r^6 term
+    """
+
+    powers = [-12, -6]
+    r_power = np.power(np.array(distances).reshape(-1,1), powers) 
+    A,B = np.linalg.lstsq(r_power, energies)[0]
+    return A,B
+
+if __name__=='__main__':
+    distances = [2,3,4,5,6,7]
+    energies = [2,0,-1,-1,2,4]
+    A,B = get_coeffs(distances, energies)
+    print(A, B)
 
 
