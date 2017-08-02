@@ -16,12 +16,24 @@ def ao_to_mo(tensor, transform):
         return tensor
     raise Exception("Not a 2 or 4 tensor")
 
-def response(g, F, C, L, R, nocc):
+def response(wfn):
     '''
     Calculates the CPHF response.
     Expects the eri 4-tensor, g,  the Fock matrix, F, the MO coeefcient matrix, C, the left and right response tensors, L and R, and the occupation number, nocc.
     '''
-
+    g = wfn.mints(ao_eri())
+    F = wfn.arrays['F']
+    C = wfn.arrays['C']
+    
+    L_ao = wfn.mints(ao_dipoles())
+    R_ao = wfn.mints(ao_dipoles())
+   
+    R = np.zeros((3,nocc * nvirt))
+    L = np.zeros((3,nocc * nvirt))
+    for i in range(3):
+        L[i,:] = ao_to_mo(L_ao[i], C)[:nocc,nocc:].ravel()
+        R[i,:] = ao_to_mo(R_ao[i], C)[:nocc,nocc:].ravel()
+    
     F = ao_to_mo(F, C)
     g = ao_to_mo(g, C)
 
