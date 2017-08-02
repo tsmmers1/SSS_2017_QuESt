@@ -13,9 +13,3 @@ mm:
   max_displacement: 0.1
   acc_rate_tol: [0.38, 0.42]
   acc_rate_scaling: [0.8, 1.2]
-mol:
-  "
-  Ar
-  Ar 1.1 1.1
-  "
-# Separate file or input file?
