@@ -1,8 +1,7 @@
 import numpy as np
-from scf_utils import *
 import scipy.sparse.linalg as spla
 import scipy as sp
-import os
+
 
 def response(g, F, C, L, R, nocc):
     '''
@@ -15,7 +14,7 @@ def response(g, F, C, L, R, nocc):
     if operator_vs == 0:
         E_inv_R = np.linalg.solve(E,R.T)
     elif operator_vs == 1:
-        E_kappa = E_kappa_MO(F, g, nocc, nvirt)
+        E_kappa = E_kappa_MO(F, g, C, nocc, nvirt)
         E_inv_R = spla.cg(E_kappa, R)
     elif operator_vs == 2:
         E_kappa = E_kappa_MO(F, g, C, get_JK, nocc, nvirt)
