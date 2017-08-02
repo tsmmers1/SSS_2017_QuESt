@@ -16,7 +16,7 @@ def test_scf():
         wfn = quest.Wavefunction(molecule, {})
 
         # Compute RHF
-        scf_energy = quest.scf_module.compute_rhf(wfn, df=False, diis=False)
+        scf_energy = quest.scf_module.compute_rhf(wfn)
 
         psi4.set_options({"scf_type": "pk"})
         ref_energy = psi4.energy("SCF" + "/" + basis, molecule=molecule.mol)
