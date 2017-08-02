@@ -7,7 +7,7 @@ codecov:
 coverage:
   ignore:
     - "setup.py"
-    - "test/"
+    - "test"
   status:
     project:
       default:
