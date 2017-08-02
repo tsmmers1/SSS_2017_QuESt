@@ -88,15 +88,26 @@ def xform_4(g, A):
 def make_f_mo(g, kappa, F, nocc, nbas):
     """
     Make F_ia^kappa in MO basis
-    """
 
-    
+    Parameters
+    ----------
+    g: Numpy 4-tensor
+    kappa : 1D array
+    F : 2-tensor
+    nocc: integer number of occupied orbitals; 1/2 nelectrons
+    nbas: number of basis functions
+
+    Returns
+    -------
+    F : 1D array
+    """
 
     # Slices - with RHF reference, nelec = 2 * nocc
     occ = slice(0,2 * nocc)
     vir = slice(2 * nocc,nbas)
 
     kappa.reshape((nocc, nvirt))
+
     # Einsum pieces of Eqn 14 in response handout
     one = np.einsum('ab,jb->ja', F[occ, occ], kappa)
     two = np.einsum('ij,jb->ib', F[vir, vir], kappa)
