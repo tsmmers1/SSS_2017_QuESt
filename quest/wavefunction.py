@@ -9,7 +9,7 @@ class Wavefunction(object):
     """
     Basic wavefunction class
 
-    Members
+    Attributes
     -------
     options: dictionary with various options, including the basis name.
     mints: contains a psi4 MintsHelper object built from the basis set.
