@@ -52,13 +52,22 @@ def df_mp2(wavefunction):
 
 
 def _mo_transform(g, C, nocc):
-    """
-    Transforms the MP2 relevant subset of the ERI tensor to MO basis
-    In the future, wavefunction class will have attributes g, C, and nocc
-    so the only argument will need to be a wfn class instance
-    C = wfn.C
-    g = wfn.g
-    nocc = wfn.nocc
+    """Transform ERIs to the MO basis
+
+    Parameters
+    ----------
+    C: numpy array
+        The MO coefficients
+    g: numpy array
+        The AO basis, 4 index ERI tensor
+    nocc:
+        The number of occupied orbitals
+
+    Returns
+    -------
+    g_iajb: numpy array
+        The MO basis, 4 index ERI tensor. Shape will be (nocc, nvir, nocc,
+        nvir)
     """
     O = slice(None, nocc)
     V = slice(nocc, None)
@@ -70,19 +79,34 @@ def _mo_transform(g, C, nocc):
     return g_iajb
 
 
-def _denom(wfn):
+def _denom(eps, nocc):
+    """Build the energy denominators 1/(eps_i + eps_j - eps_a - eps_b)
+
+    Parameters
+    ----------
+    eps: numpy array
+        The orbital energies, shape (nbf,)
+
+    nocc: int
+        The number of occupied orbitals
+
+    Returns
+    -------
+    e_denom: numpy array
+        The energy denominators with shape matching the MO ERIs (nocc, nvir,
+        nocc, nvir)
+    """
     #get energies from fock matrix)
-    #multiply C and F to get 
+    #multiply C and F to get
     eps = wfn.arrays.get("EPSILON", None )
     if eps != None:
         #must pull nocc from wavefunction when implemented
-        nocc = 5
         eocc = eps[:nocc]
         evir = eps[nocc:]
         e_denom = 1 / (eocc.reshape(-1, 1, 1, 1) - evir.reshape(-1, 1, 1) + eocc.reshape( -1, 1) - evir)
-   else:
+    else:
         raise Exception ("orbital energy array  'EPSILON' doesn't exist")
-   return e_denom
+    return e_denom
 
 
 
