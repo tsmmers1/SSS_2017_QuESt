@@ -1,13 +1,13 @@
 """
-A basic wave function class
+A basic wavefunction class
 """
 
 import psi4
 
 
-class WaveFunction(object):
+class Wavefunction(object):
     """
-    Basic wave function class
+    Basic wavefunction class
 
     Members:
         options: dictionary with various options, including the basis name.
@@ -20,7 +20,7 @@ class WaveFunction(object):
 
     def __init__(self, mol):
         """
-        Initialize the WaveFunction class.
+        Initialize the Wavefunction class.
 
         Args:
             mol: a Molecule class from the QuESt repository. Needs to
