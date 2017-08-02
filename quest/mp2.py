@@ -110,15 +110,15 @@ def _denom(eps, nocc):
 
 
 
-def _compute_conv_e(I_iajb, D_ijab):
+def _compute_conv_e(g_iajb, e_denom):
     # OS = (ia|jb)(ia|jb)/(ei+ej-ea-eb)
-    OS = np.einsum("iajb,iajb,ijab->", I_iajb, I_iajb, D_ijab)
+    os = np.einsum("iajb,iajb,iajb->", g_iajb, g_iajb, e_denom)
     # build (ib|ja)
-    I_ibja = I_iajb.swapaxes(1, 3)
+    g_ibja = g_iajb.swapaxes(1, 3)
     # SS = [(ia|jb)-(ib|ja)](ia|jb)/(ei+ej-ea-eb)
-    SS = np.einsum("iajb,iajb,ijab->", (I_iajb - I_ibja), I_iajb, D_ijab)
+    ss = np.einsum("iajb,iajb,ijab->", (g_iajb - g_ibja), g_iajb, e_denom)
     # opposite spin, same spin
-    E_mp2 = OS - SS
+    E_mp2 = os - ss
     return E_mp2
 
 
