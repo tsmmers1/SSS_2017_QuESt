@@ -1,4 +1,5 @@
 import numpy as np
+import scipy.sparse.linalg as spla
 
 
 def E_kappa_MO(F, g, nocc, nbas):
@@ -23,6 +24,8 @@ def E_kappa_MO(F, g, nocc, nbas):
         occ = slice(0, nocc)
         vir = slice(nocc, nbas)
 
+        nvirt = nbas - nocc
+
         kappa.reshape((nocc, nvirt))
 
         # Einsum pieces of Eqn 14 in response handout
@@ -37,7 +40,9 @@ def E_kappa_MO(F, g, nocc, nbas):
         Fiakappa.ravel()
 
         return Fiakappa
-    return return_func_pointer
+        shape=((nbas-nocc) * nocc, (nbas-nocc) * nocc)
+        matvec = return_func_pointer
+    return (spla.LinearOperator(shape, matvec)
 
 def E_kappa_AO(F, g, C, get_JK, nocc, nbas):
     """
