@@ -1,36 +1,41 @@
-
-
 import psi4
-import numpy as np
 
-class Molecule:
+class Molecule(object):
     '''
-    A molecule class that is used to store basic parameters and
-    atomic orbitals/density matrices
+    A molecule class that is used to store basic parameters including
+    psi4 geometry, basis set, number of electrons, and number of doubly
+    occupied orbitals.
     '''
 
-    def __init__(self, mol=None, bas=None, nel=0):
+    def __init__(self, mol=None, bas=None):
         '''
-        Initialize molecule with geometry mol, basis
-        set bas and number of occupied orbitals nel
+        Initialize molecule with geometry mol and basis
+        set bas. Calculate number of electrons nel and
+        number of doubly occupied orbitals ndocc.
         '''
         self.mol = mol
         self.bas = bas
-        self.nel = nel
-        self.C = None
-        self.D = None
-        self.g = None
-        self.F = None
-        self.eps = None
-        self.ao_eri_computed = False
-        self.ao_eri = None
+
+        # Calculate the number of doubly occupied orbitals and the number of electrons
+        self.nel = sum(self.molecule.Z(n) for n in range(self.molecule.natom()))
+        self.nel -= self.molecule.molecular_charge()
+        
+        if not (self.nel / 2.0).is_integer():
+            raise ValueError("Molecule must have an even number of electrons to perform RHF.")
+        self.ndocc = int(self.nel / 2.0)
 
     def set_geometry(self, geom_str):
         '''
-        set the geometry of the molecule by providing
-        a psi4 style string
+        Set the geometry of the molecule by providing
+        a psi4 style string or psi4 geometry.
         '''
-        self.mol = psi4.geometry(geom_str)
+        if isinstance(mol, geom_str):
+            self.mol = psi4.geometry(mol)
+        elif isinstance(mol, psi4.core.Molecule):
+            self.mol = mol
+        else:
+            raise TypeError("Input molecule of type %s is not understood" % type(mol))
+
         self.mol.update_geometry()
 
     def set_basis(bas_str):
@@ -42,24 +47,3 @@ class Molecule:
         else:
             self.bas = psi4.core.BasisSet.build(self.mol, target=bas_str)
 
-    def get_mints(self):
-        '''
-        Built a MintsHelper - helps get integrals from psi4
-        '''
-        mints = psi4.core.MintsHelper(self.bas)
-
-        nbf = mints.nbf()
-
-        if (nbf > 200):
-            raise Exception("More than 200 basis functions!")
-
-        return mints
-
-    def get_ao_eri(self):
-        '''
-        Returns two electron integrals. If they don't exist
-        use mints to calculate and store them.
-        '''
-        if self.ao_eri_computed == False:
-            self.ao_eri = np.array(self.get_mints().ao_eri())
-        return self.ao_eri
