@@ -94,7 +94,7 @@ def make_f_mo(g, kappa, F, nocc, nbas):
     g: Numpy 4-tensor
     kappa : 1D array
     F : 2-tensor
-    nocc: integer number of occupied orbitals; 1/2 nelectrons
+    nocc: integer number of occupied orbitals
     nbas: number of basis functions
 
     Returns
@@ -103,8 +103,8 @@ def make_f_mo(g, kappa, F, nocc, nbas):
     """
 
     # Slices - with RHF reference, nelec = 2 * nocc
-    occ = slice(0,2 * nocc)
-    vir = slice(2 * nocc,nbas)
+    occ = slice(0, nocc)
+    vir = slice(nocc, nbas)
 
     kappa.reshape((nocc, nvirt))
 
