@@ -2,9 +2,31 @@
 This is a file where DIIS and CG would go.
 """
 
-def DIIS_step(state_list, error_list, diis_vectors = 6):
+def DIIS_step(state_list, error_list):
     """Routine that returns a guess for a new state vector
     using DIIS
+
+    Parameters
+    ----------
+    state_list : list of numpy arrays
+                 n previous states to form the new state from
+    error_list : list of numpy arrays
+                 n previous errors corresponding to `state_list`
+
+    Returns
+    -------
+    new_state : numpy array
+                new state array from DIIS update
+
+    Notes
+    -----
+    Whichever method calls this routine must keep track of its `state_list` and
+    `error_list` and update them.
+
+    Examples
+    --------
+    new_state = solvers.DIIS_step(state_list, error_list)
+
     """
     if len(state_list) != len(error_list):
         raise Exception("State and error list sizes don't match")
