@@ -24,11 +24,21 @@ def mp2(wavefunction):
 
 
 def df_mp2(wavefunction):
-    """
-    Density-Fitted MP2 energy
+    """MP2 energy using Density fitted ERIs
 
-    Takes a quest.wavefunction.Wavefunction object, returns a wavefunction object
-    modifies the energy dict with the MP2_corr_E, MP2_E variables
+    Parameters
+    ----------
+    wavefunction: Wavefunction object
+        Input `wavefunction` should have MO coefficients and orbital energies in
+        `wavefunction.arrays` dictionary.
+
+    Returns
+    --------
+    mp2_energy: float
+        The mp2 energy, scf_energy + mp2 correlation energy
+    wavefunction: Wavefunction object
+        On return this will be the input `wavefunction` with MP2 energy quantities added to the
+        `wavefunction.energies` dictionary.
     """
     pass
 
